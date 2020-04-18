@@ -1,0 +1,442 @@
+metadata:
+  title: IPEC Trademark Client Intake
+  short title: Trademark Intake
+  author: Dylan Barrett
+comment: |
+  Suffolk University Law School Intellectual Property and Entreprenuership Clinic
+---
+features:
+  # This moves the "help" and "back" button next to the Continue button
+  question help button: True
+  # question back button: True
+  # One way to customize appearance is with a Bootstrap theme
+  # Try linking one from https://www.bootstrapcdn.com/bootswatch/
+  # Or generate your own via https://pikock.github.io/bootstrap-magic/app/index.html#!/editor
+  bootstrap theme: https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/sandstone/bootstrap.min.css
+  # bootstrap theme: https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css
+---
+comment: |
+  List all objects that the user must define here.
+objects:
+  - user: Individual
+  - address: Address
+  - goods_under_mark: DAList.using(there_are_any=True)
+---
+comment: |
+  All questions you want to ask by listing the object or variable in the question, making the question mandatory. Doccassemble will always show these questions.
+mandatory: True
+code: |
+  introduction
+  user.firstname
+  user.address.address
+  mark_type
+  mark_goods_services
+  goods_description
+  goods_under_mark.gather()
+  services_under_mark
+  subject_matter
+  use_in_commerce
+  date_of_first_use
+  date_of_planned_use
+  trademark_use_description
+  geographic_use
+  end_screen
+---
+comment: |
+  If statements go here.
+---
+comment: |
+  This is the introduction screen.
+question: |
+  Suffolk University Law School
+subquestion: |
+  **Intellectual Property and Entreprenuership Clinic**
+
+  This interview will collect the information your student attorney needs to begin working on your trademark application.
+  
+  Your student attorney will still need to meet and/or speak with you, and will reach out to schedule a follow up.
+  
+  **Note:** This interview is **not legal advice**. Only your student attorney may provide legal advice.
+continue button field: introduction
+---
+question: |
+  Please provide all the following information:
+fields:
+  - Frist Name: user.firstname
+  - Last Name: user.lastname
+  - Email: user.email
+---
+question: |
+  Please provide your personal address.
+fields:
+  - Street: user.address.address
+    address autocomplete: True
+  - Apartment:  user.address.unit
+    required: False
+  - City: user.address.city
+  - State: user.address.state
+  - ZIP Code: user.address.zip
+---
+comment: | 
+  we always want to ask this question
+question: |
+  Does your mark consist of any of the following? 
+fields:
+  - "Select all that apply": mark_type
+    datatype: checkboxes
+    choices: 
+      - Word(s)
+      - Graphic(s), logo(s), imaage(s)
+      - Distinctive typeface or font
+      - A design(s), logo(s), or image(s) that appear together with the word(s)
+---
+question: |
+  Will you use your mark in the sale of goods?
+subquestion: |
+  Such as selling products and physical merchandise.
+field: mark_goods_services
+buttons: 
+  - Yes: yes
+  - No: No
+  - I am not sure yet: not_sure_yet
+---
+mandatory: True
+question: |
+  Select the goods you will offer under the proposed mark.
+fields:
+  - Goods under mark: goods_under_mark[i]
+    input type: ajax
+    action: wordlist
+list collect: True
+---
+event: wordlist
+code: |
+  set_save_status('ignore')
+  wordstart = action_argument('wordstart').lower()
+  results = set()
+  for IC in international_classes_goods:
+    words_list = IC.lower().split(" ")
+    for word in words_list:
+      if word.startswith(wordstart):
+        results.add(IC)
+  json_response(list(results))
+---
+variable name: international_classes_goods
+data:
+  - IC1 chemicals for industry, science, or photography.
+  - IC1 chemicals for agriculture, horticulture, forestry.
+  - IC1 unprocessed artificial resins.
+  - IC1 unprocessed plastics.
+  - IC1 fire extinguishing and fire prevention compositions.
+  - IC1 tempering and soldering preparations.
+  - IC1 substances for tanning animal skins and hides.
+  - IC1 adhesives for use in industry.
+  - IC1 putties and other paste fillers.
+  - IC1 compost, manures, fertilizers.
+  - IC1 biological preparations for use in industry and science.
+  - IC2 Paints, varnishes, lacquers.
+  - IC2 preservatives for metal or wood.
+  - IC2 colorants, dyes; inks for printing, marking, engraving.
+  - IC2 raw natural resins.
+  - IC2 metals in foil or powder form for painting, decorating, printing and art.
+  - IC3 Non-medicated cosmetics and toiletry preparations.
+  - IC3 non-medicated dentifrices.
+  - IC3 perfume or essential oils.
+  - IC3 bleaching preparations, other substances for laundry use.
+  - IC3 cleaning, polishing, scouring and abrasive preparations.
+  - IC4 Industrial oils and greases, wax.
+  - IC4 lubricants.
+  - IC4 dust absorbing, wetting and binding compositions.
+  - IC4 fuels and illuminants.
+  - IC4 candles and wicks for lighting.
+  - IC5 Pharmaceuticals, medical and veterinary preparations;
+  - IC5 sanitary preparations for medical purposes;
+  - IC5 dietetic food and substances adapted for medical or veterinary use.
+  - IC5 food for babies.
+  - IC5 dietary supplements for human beings and animals.
+  - IC5 plasters, materials for dressings.
+  - IC5 material for stopping teeth, dental wax.
+  - IC5 disinfectants.
+  - IC5 preparations for destroying vermin.
+  - IC5 fungicides, herbicides.
+  - IC6 Common metals, alloys, ores.
+  - IC6 metal materials for building and construction.
+  - IC6 transportable buildings of metal.
+  - IC6 non-electric cables and wires of common metal.
+  - IC6 small items of metal hardware.
+  - IC6 metal containers for storage or transport.
+  - IC6 metal safes.
+  - IC7 Machines, machine tools, power-operated tools;
+  - IC7 motors and engines, except for land vehicles;
+  - IC7 machine coupling and transmission components, except for land vehicles;
+  - IC7 agricultural implements, other than hand-operated hand tools;
+  - IC7 incubators for eggs;
+  - IC7 automatic vending machines.
+  - IC8 Hand tools and implements, hand-operated;
+  - IC8 cutlery;
+  - IC8 side arms, except firearms;
+  - IC8 razors.
+  - IC9 Scientific, research, navigation, surveying, 
+  - IC9 photographic, cinematographic, audiovisual, optical, 
+  - IC9 weighing, measuring, signalling, detecting, testing, inspecting, life-saving and teaching apparatus and instruments;
+  - IC9 apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity;
+  - IC9 apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data;
+  - IC9 recorded and downloadable media, computer software, blank digital or analogue recording and storage media;
+  - IC9 mechanisms for coin-operated apparatus;
+  - IC9 cash registers, calculating devices;
+  - IC9 computers and computer peripheral devices;
+  - IC9 diving suits, divers’ masks, ear plugs for divers, nose clips for divers and swimmers, gloves for divers, 
+  - IC9 breathing apparatus for underwater swimming;
+  - IC9 fire-extinguishing apparatus.
+  - IC10 Surgical, medical, dental and veterinary apparatus and instruments;
+  - IC10 artificial limbs, eyes and teeth;
+  - IC10 orthopaedic articles;
+  - IC10 suture materials;
+  - IC10 therapeutic and assistive devices adapted for persons with disabilities;
+  - IC10 massage apparatus;
+  - IC10 apparatus, devices and articles for nursing infants;
+  - IC10 sexual activity apparatus, devices and articles.
+  - IC11 Apparatus and installations for lighting, 
+  - IC11 heating, cooling, steam generating, cooking, 
+  - IC11 drying, ventilating, water supply and sanitary purposes.
+  - IC12 Vehicles for locomotion by land, air or water.
+  - IC13 Firearms;
+  - IC13 ammunition and projectiles;
+  - IC13 explosives and fireworks.
+  - IC14 Precious metals and their alloys;
+  - IC14 jewellery, precious and semi-precious stones;
+  - IC14 horological and chronometric instruments.
+  - IC15 Musical instruments;
+  - IC15 music stands and stands for musical instruments;
+  - IC15 conductors’ batons.
+  - IC16 Paper and cardboard;
+  - IC16 printed matter;
+  - IC16 bookbinding material;
+  - IC16 photographs;
+  - IC16 stationery and office requisites, except furniture;
+  - IC16 adhesives for stationery or household purposes;
+  - IC16 drawing materials and materials for artists;
+  - IC16 paintbrushes;
+  - IC16 instructional and teaching materials;
+  - IC16 plastic sheets, films and bags for wrapping and packaging;
+  - IC16 printers’ type, printing blocks.
+  - IC17 Unprocessed and semi-processed rubber, gutta-percha, gum, asbestos, mica and substitutes for all these materials;
+  - IC17 plastics and resins in extruded form for use in manufacture;
+  - IC17 packing, stopping and insulating materials;
+  - IC17 flexible pipes, tubes and hoses, not of metal.
+  - IC18 Leather and imitations of leather;
+  - IC18 animal skins and hides;
+  - IC18 luggage and carrying bags;
+  - IC18 umbrellas and parasols;
+  - IC18 walking sticks;
+  - IC18 whips, harness and saddlery;
+  - IC18 collars, leashes and clothing for animals.
+  - IC19 Materials, not of metal, for building and construction;
+  - IC19 rigid pipes, not of metal, for building;
+  - IC19 asphalt, pitch, tar and bitumen;
+  - IC19 transportable buildings, not of metal;
+  - IC19 monuments, not of metal.
+  - IC20 Furniture, mirrors, picture frames;
+  - IC20 containers, not of metal, for storage or transport;
+  - IC20 unworked or semi-worked bone, horn, whalebone or mother-of-pearl;
+  - IC20 shells;
+  - IC20 meerschaum;
+  - IC20 yellow amber.
+  - IC21 Household or kitchen utensils and containers;
+  - IC21 cookware and tableware, except forks, knives and spoons;
+  - IC21 combs and sponges;
+  - IC21 brushes, except paintbrushes;
+  - IC21 brush-making materials;
+  - IC21 articles for cleaning purposes;
+  - IC21 unworked or semi-worked glass, except building glass;
+  - IC21 glassware, porcelain and earthenware.
+  - IC21 Ropes and string;
+  - IC21 nets;
+  - IC21 tents and tarpaulins;
+  - IC21 awnings of textile or synthetic materials;
+  - IC21 sails;
+  - IC21 sacks for the transport and storage of materials in bulk;
+  - IC21 padding, cushioning and stuffing materials, except of paper, cardboard, rubber or plastics;
+  - IC21 raw fibrous textile materials and substitutes therefor.
+  - IC22 Yarns and threads for textile use.
+  - IC23 Textiles and substitutes for textiles;
+  - IC24 household linen;
+  - IC24 curtains of textile or plastic.
+  - IC25 Clothing, footwear, headwear.
+  - IC26 Lace, braid and embroidery, and haberdashery ribbons and bows;
+  - IC26 buttons, hooks and eyes, pins and needles;
+  - IC26 artificial flowers;
+  - IC26 hair decorations;
+  - IC26 false hair.
+  - IC27 Carpets, rugs, mats and matting, linoleum and other materials for covering existing floors;
+  - IC27 wall hangings, not of textile.
+  - IC28 Games, toys and playthings;
+  - IC28 video game apparatus;
+  - IC28 gymnastic and sporting articles;
+  - IC28 decorations for Christmas trees.
+  - IC29 Meat, fish, poultry and game;
+  - IC29 meat extracts;
+  - IC29 preserved, frozen, dried and cooked fruits and vegetables;
+  - IC29 jellies, jams, compotes;
+  - IC29 eggs;
+  - IC29 milk, cheese, butter, yogurt, milk products;
+  - IC29 oils and fats for food.
+  - IC30 Coffee, tea, cocoa, artificial coffee;
+  - IC30 rice, pasta and noodles;
+  - IC30 tapioca and sago;
+  - IC30 flour and preparations made from cereals;
+  - IC30 bread, pastries and confectionery;
+  - IC30 chocolate;
+  - IC30 ice cream, sorbets and other edible ices;
+  - IC30 sugar, honey, treacle;
+  - IC30 yeast, baking-powder;
+  - IC30 salt, seasonings, spices, preserved herbs;
+  - IC30 vinegar, sauces and other condiments;
+  - IC30 ice.
+  - IC31 Raw and unprocessed agricultural, aquacultural, horticultural and forestry products;
+  - IC31 raw and unprocessed grains and seeds;
+  - IC31 fresh fruits and vegetables, fresh herbs;
+  - IC31 natural plants and flowers;
+  - IC31 bulbs, seedlings and seeds for planting;
+  - IC31 live animals;
+  - IC31 foodstuffs and beverages for animals;
+  - IC31 malt.
+  - IC32 Beers;
+  - IC32 non-alcoholic beverages;
+  - IC32 mineral and aerated waters;
+  - IC32 fruit beverages and fruit juices;
+  - IC32 syrups and other non-alcoholic preparations for making beverages.
+  - IC33 Alcoholic beverages, except beers;
+  - IC33 alcoholic preparations for making beverages.
+  - IC34 Tobacco and tobacco substitutes;
+  - IC34 cigarettes and cigars;
+  - IC34 electronic cigarettes and oral vaporizers for smokers;
+  - IC34 smokers’ articles;
+  - IC34 matches.
+---
+mandatory: True
+question: |
+  Select the services you will offer under the proposed mark.
+fields:
+  - Services offered under mark: services_under_mark
+    input type: ajax
+    action: wordlist2
+under: |
+  Some helpful links will be here later.
+---
+event: wordlist2
+code: |
+  set_save_status('ignore')
+  wordstart = action_argument('wordstart').lower()
+  results = set()
+  for IC in international_classes_services:
+    words_list = IC.lower().split(" ")
+    for word in words_list:
+      if word.startswith(wordstart):
+        results.add(IC)
+  json_response(list(results))
+---
+variable name: international_classes_services
+data:
+  - IC35 Advertising;
+  - IC35 business management;
+  - IC35 business administration;
+  - IC35 office functions.
+  - IC36 Insurance;
+  - IC36 financial affairs;
+  - IC36 monetary affairs;
+  - IC36 real estate affairs.
+  - IC37 Construction services;
+  - IC37 installation and repair services;
+  - IC37 mining extraction, oil and gas drilling.
+  - IC38 Telecommunications services.
+  - IC39 Transport;
+  - IC39 packaging and storage of goods;
+  - IC39 travel arrangement.
+  - IC40 Treatment of materials;
+  - IC40 recycling of waste and trash;
+  - IC40 air purification and treatment of water;
+  - IC40 printing services;
+  - IC40 food and drink preservation.
+  - IC41 Education;
+  - IC41 providing of training;
+  - IC41 entertainment;
+  - IC41 sporting and cultural activities.
+  - IC42 Scientific and technological services and research and design relating thereto;
+  - IC42 industrial analysis, industrial research and industrial design services;
+  - IC42 quality control and authentication services;
+  - IC42 design and development of computer hardware and software.
+  - IC43 Services for providing food and drink;
+  - IC43 temporary accommodation.
+  - IC44 Medical services;
+  - IC44 veterinary services;
+  - IC44 hygienic and beauty care for human beings or animals;
+  - IC44 agriculture, aquaculture, horticulture and forestry services.
+  - IC45 Legal services;
+  - IC45 security services for the physical protection of tangible property and individuals;
+  - IC45 personal and social services rendered by others to meet the needs of individuals.
+---
+question: |
+  Please describe the goods or services you will sell, market, or offer using your trademark.
+subquestion: |
+  Please be specific, for instance, instead of "toys" say "action figures." Make sure to list all goods you will sell.
+fields:
+  - Goods: goods_description
+    input type: area
+    rows: 10
+---
+question: |
+  Please describe the subject matter or purpose of the trademark.
+subquestion: |
+  such as a website, software, a mobile application, etc.
+fields:
+  - Subject matter or purpose: subject_matter
+    input type: area
+    rows: 10
+---
+question: |
+  Have you used the proposed trademark to promote, sell, or provide your goods or services within the United States?
+yesnomaybe: use_in_commerce
+---
+comment: only ask this if the client answered yes to use in commerce.
+question: |
+  When did you first use the proposed trademark?
+fields:
+  - Date of first use: date_of_first_use
+    datatype: date
+---
+question:
+  Please describe how you have used the proposed trademark.
+fields:
+  - Describe how you have used the trademark: trademark_use_description
+    input type: area
+    rows: 10
+---
+comment: |
+  only ask this if the client hasn't yet used the proposed trademark in commerce.
+question: |
+  When do you plan on using your proposed trademark?
+fields:
+  - Date of planned use: date_of_planned_use
+    datatype: date
+subquestion: |
+  The date does not need to be exact. For instance, if you plan on using the trademark sometime in November of 2021, you may select 11/01/2021.
+---
+question: |
+  In what geographic locations have you used your proposed trademark?
+fields:
+  - "Select only one": geographic_use
+    input type: radio
+    choices: 
+      - Nationwide (United States)
+      - A specific area within the United States
+      - Internationally (outside the United States)
+      - Internationally and within the United States
+  - State(s) of use: trademark_state
+    input type: combobox
+    code: |
+      states_list()
+---
+event: end_screen
+question: |
+  Placeholder
