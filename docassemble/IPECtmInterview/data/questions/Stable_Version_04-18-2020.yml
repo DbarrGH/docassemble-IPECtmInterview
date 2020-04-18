@@ -21,6 +21,7 @@ objects:
   - user: Individual
   - address: Address
   - goods_under_mark: DAList.using(there_are_any=True)
+  - services_under_mark: DAList.using(there_are_any=True)
 ---
 comment: |
   All questions you want to ask by listing the object or variable in the question, making the question mandatory. Doccassemble will always show these questions.
@@ -31,6 +32,7 @@ code: |
   user.address.address
   mark_type
   mark_goods_services
+  mark_services
   goods_description
   goods_under_mark.gather()
   services_under_mark
@@ -62,7 +64,7 @@ continue button field: introduction
 question: |
   Please provide all the following information:
 fields:
-  - Frist Name: user.firstname
+  - First Name: user.firstname
   - Last Name: user.lastname
   - Email: user.email
 ---
@@ -71,7 +73,7 @@ question: |
 fields:
   - Street: user.address.address
     address autocomplete: True
-  - Apartment:  user.address.unit
+  - Address 2:  user.address.unit
     required: False
   - City: user.address.city
   - State: user.address.state
@@ -86,7 +88,7 @@ fields:
     datatype: checkboxes
     choices: 
       - Word(s)
-      - Graphic(s), logo(s), imaage(s)
+      - Graphic(s), logo(s), image(s)
       - Distinctive typeface or font
       - A design(s), logo(s), or image(s) that appear together with the word(s)
 ---
@@ -99,6 +101,16 @@ buttons:
   - Yes: yes
   - No: No
   - I am not sure yet: not_sure_yet
+---
+question: |
+  Will you use your mark in the sale of services?
+subquestion: |
+  Such as consulting, design, medicine, etc.
+field: mark_services
+buttons:
+  - Yes: yes
+  - No: no
+  - I am not sure yet: not_sure_yet2
 ---
 mandatory: True
 question: |
@@ -318,7 +330,7 @@ mandatory: True
 question: |
   Select the services you will offer under the proposed mark.
 fields:
-  - Services offered under mark: services_under_mark
+  - Services offered under mark: services_under_mark[i]
     input type: ajax
     action: wordlist2
 under: |
