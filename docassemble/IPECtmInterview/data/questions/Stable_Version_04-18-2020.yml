@@ -14,6 +14,7 @@ features:
   # Or generate your own via https://pikock.github.io/bootstrap-magic/app/index.html#!/editor
   bootstrap theme: https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/sandstone/bootstrap.min.css
   # bootstrap theme: https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css
+  maximum image size: 200
 ---
 comment: |
   List all objects that the user must define here.
@@ -34,17 +35,21 @@ code: |
   if mark_business:
     business.address.address
   else:
-    mark_type
-  mark_goods_services
+    mark_image
+  mark_image
+  mark_picture
+  mark_type
+  if use_in_commerce:
+    date_of_first_use
+  else:
+    date_of_planned_use
+  geographic_use
+  trademark_use_description
+  subject_matter
+  goods_or_services
   goods_description
   goods_under_mark.gather()
   services_under_mark.gather()
-  subject_matter
-  use_in_commerce
-  date_of_first_use
-  date_of_planned_use
-  trademark_use_description
-  geographic_use
   end_screen
 ---
 comment: |
@@ -88,23 +93,29 @@ fields:
   - no label: mark_business
     datatype: yesnoradio
 ---
-mandatory: True
-code: |
-  if mark_business:
-    business.address.address
-  else:
-    mark_type
----
 question: |
   Please provide your business name and address.
 fields:
   - Business Name: business.name
-  - Address: business.address.address
+  - Business Address: business.address.address
     address autocomplete: True
   - Address 2: business.address.unit
+    required: False
   - City: business.city
   - State: business.state
   - ZIP Code: business.zip
+---
+question: |
+  Do you have a digital image of your proposed trademark?
+fields:
+  - no label: mark_image
+    datatype: yesnoradio
+---
+question: |
+  Please upload a picture of your proposed trademark.
+fields:
+  - Picture: mark_picture
+    datatype: file
 ---
 comment: | 
   we always want to ask this question
@@ -120,14 +131,19 @@ fields:
       - A design(s), logo(s), or image(s) that appear together with the word(s)
 ---
 question: |
-  Will you use your mark in the sale of goods?
-subquestion: |
-  Such as selling products and physical merchandise.
-field: mark_goods_services
-buttons: 
-  - Yes: yes
-  - No: No
-  - I am not sure yet: not_sure_yet
+  Will you use your trademark to sell goods, offer services, or both?
+fields:
+  - Click the blue question mark for more information: goods_or_services
+    datatype: radio
+    code: |
+      goods_services_options
+---
+code: |
+  goods_services_options = [
+                ['goods', 'Goods', None, 'Apples are good in pies.'],
+                ['services', 'Services', None, 'Oranges are a type of citrus fruit.'],
+                ['both', 'Both goods and services', None, 'Pears are an acquired taste.']
+              ]
 ---
 mandatory: True
 question: |
