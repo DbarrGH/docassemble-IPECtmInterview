@@ -32,10 +32,9 @@ code: |
   user.address.address
   mark_type
   mark_goods_services
-  mark_services
   goods_description
   goods_under_mark.gather()
-  services_under_mark
+  services_under_mark.gather()
   subject_matter
   use_in_commerce
   date_of_first_use
@@ -64,7 +63,7 @@ continue button field: introduction
 question: |
   Please provide all the following information:
 fields:
-  - First Name: user.firstname
+  - Frist Name: user.firstname
   - Last Name: user.lastname
   - Email: user.email
 ---
@@ -73,7 +72,7 @@ question: |
 fields:
   - Street: user.address.address
     address autocomplete: True
-  - Address 2:  user.address.unit
+  - Apartment:  user.address.unit
     required: False
   - City: user.address.city
   - State: user.address.state
@@ -88,7 +87,7 @@ fields:
     datatype: checkboxes
     choices: 
       - Word(s)
-      - Graphic(s), logo(s), image(s)
+      - Graphic(s), logo(s), imaage(s)
       - Distinctive typeface or font
       - A design(s), logo(s), or image(s) that appear together with the word(s)
 ---
@@ -101,16 +100,6 @@ buttons:
   - Yes: yes
   - No: No
   - I am not sure yet: not_sure_yet
----
-question: |
-  Will you use your mark in the sale of services?
-subquestion: |
-  Such as consulting, design, medicine, etc.
-field: mark_services
-buttons:
-  - Yes: yes
-  - No: no
-  - I am not sure yet: not_sure_yet2
 ---
 mandatory: True
 question: |
@@ -333,6 +322,7 @@ fields:
   - Services offered under mark: services_under_mark[i]
     input type: ajax
     action: wordlist2
+list collect: True
 under: |
   Some helpful links will be here later.
 ---
