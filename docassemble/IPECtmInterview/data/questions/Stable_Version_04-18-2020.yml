@@ -19,6 +19,7 @@ comment: |
   List all objects that the user must define here.
 objects:
   - user: Individual
+  - business: Person
   - address: Address
   - goods_under_mark: DAList.using(there_are_any=True)
   - services_under_mark: DAList.using(there_are_any=True)
@@ -30,7 +31,10 @@ code: |
   introduction
   user.firstname
   user.address.address
-  mark_type
+  if mark_business:
+    business.address.address
+  else:
+    mark_type
   mark_goods_services
   goods_description
   goods_under_mark.gather()
@@ -77,6 +81,30 @@ fields:
   - City: user.address.city
   - State: user.address.state
   - ZIP Code: user.address.zip
+---
+question: |
+  Will you use the trademark as part of a business?
+fields: 
+  - no label: mark_business
+    datatype: yesnoradio
+---
+mandatory: True
+code: |
+  if mark_business:
+    business.address.address
+  else:
+    mark_type
+---
+question: |
+  Please provide your business name and address.
+fields:
+  - Business Name: business.name
+  - Address: business.address.address
+    address autocomplete: True
+  - Address 2: business.address.unit
+  - City: business.city
+  - State: business.state
+  - ZIP Code: business.zip
 ---
 comment: | 
   we always want to ask this question
