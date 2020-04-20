@@ -24,6 +24,7 @@ objects:
   - address: Address
   - goods_under_mark: DAList.using(there_are_any=True)
   - services_under_mark: DAList.using(there_are_any=True)
+  - states_of_use: DAList.using(there_are_any=True)
 ---
 comment: |
   All questions you want to ask by listing the object or variable in the question, making the question mandatory. Doccassemble will always show these questions.
@@ -36,15 +37,17 @@ code: |
     business.address.address
   else:
     mark_image
-  mark_image
-  mark_picture
+  if mark_image:
+    mark_picture
+  else:
+    mark_type
   mark_type
   if use_in_commerce:
     date_of_first_use
   else:
     date_of_planned_use
-  geographic_use
-  trademark_use_description
+  if geographic_use == "specific_states" or geographic_use == "international_and_us":
+    states_of_use.gather()
   subject_matter
   goods_or_services
   goods_description
@@ -69,13 +72,15 @@ subquestion: |
   **Note:** This interview is **not legal advice**. Only your student attorney may provide legal advice.
 continue button field: introduction
 ---
+#No. 1 - client name and email
 question: |
-  Please provide all the following information:
+  Please provide your name and email.
 fields:
   - Frist Name: user.firstname
   - Last Name: user.lastname
   - Email: user.email
 ---
+#No. 2 - Client personal address
 question: |
   Please provide your personal address.
 fields:
@@ -87,12 +92,14 @@ fields:
   - State: user.address.state
   - ZIP Code: user.address.zip
 ---
+#No. 3 - Trademark as part of a business
 question: |
   Will you use the trademark as part of a business?
 fields: 
   - no label: mark_business
     datatype: yesnoradio
 ---
+#No. 4 - Business address
 question: |
   Please provide your business name and address.
 fields:
@@ -105,18 +112,21 @@ fields:
   - State: business.state
   - ZIP Code: business.zip
 ---
+#No. 5 - Digital image of mark
 question: |
   Do you have a digital image of your proposed trademark?
 fields:
   - no label: mark_image
     datatype: yesnoradio
 ---
+#No. 6 - picture upload
 question: |
   Please upload a picture of your proposed trademark.
 fields:
   - Picture: mark_picture
     datatype: file
 ---
+#No. 7 mark attributes
 comment: | 
   we always want to ask this question
 question: |
@@ -128,7 +138,7 @@ fields:
       - Word(s)
       - Graphic(s), logo(s), imaage(s)
       - Distinctive typeface or font
-      - A design(s), logo(s), or image(s) that appear together with the word(s)
+      - A design(s), logo(s), or image(s) that appear together with word(s)
 ---
 question: |
   Will you use your trademark to sell goods, offer services, or both?
@@ -468,20 +478,93 @@ fields:
 subquestion: |
   The date does not need to be exact. For instance, if you plan on using the trademark sometime in November of 2021, you may select 11/01/2021.
 ---
+mandatory: true
 question: |
-  In what geographic locations have you used your proposed trademark?
+  In what geographic locations have you used, or do you plan on using, your proposed trademark?
 fields:
   - "Select only one": geographic_use
     input type: radio
     choices: 
-      - Nationwide (United States)
-      - A specific area within the United States
-      - Internationally (outside the United States)
-      - Internationally and within the United States
-  - State(s) of use: trademark_state
-    input type: combobox
-    code: |
-      states_list()
+      - Nationwide (United States): nationwide
+      - A specific area within the United States: specific_states
+      - Outside the United States (internationally): international
+      - Within _and_ outside the United States: international_and_us
+---
+mandatory: True
+question: |
+  Select the states where you will, or where you have, used the proposed mark.
+fields:
+  - Services offered under mark: states_of_use[i]
+    input type: ajax
+    action: wordlist3
+list collect: True
+under: |
+  Some helpful links will be here later.
+---
+event: wordlist3
+code: |
+  set_save_status('ignore')
+  wordstart = action_argument('wordstart').lower()
+  results = set()
+  for IC in specific_states:
+    words_list = IC.lower().split(" ")
+    for word in words_list:
+      if word.startswith(wordstart):
+        results.add(IC)
+  json_response(list(results))
+---
+variable name: specific_states
+data:
+  - Alabama
+  - Alaska
+  - Arizona
+  - Arkansas
+  - California
+  - Colorado
+  - Connecticut
+  - Delaware
+  - Florida
+  - Georgia
+  - Hawaii
+  - Idaho
+  - Illinois
+  - Indiana
+  - Iowa
+  - Kansas
+  - Kentucky
+  - Louisiana
+  - Maine
+  - Maryland
+  - Massachusetts
+  - Michigan
+  - Minnesota
+  - Mississippi
+  - Missouri
+  - Montana
+  - Nebraska
+  - Nevada
+  - New Hampshire
+  - New Jersey
+  - New Mexico
+  - New York
+  - North Carolina
+  - North Dakota
+  - Ohio
+  - Oklahoma
+  - Oregon
+  - Pennsylvania
+  - Rhode Island
+  - South Carolina
+  - South Dakota
+  - Tennessee
+  - Texas
+  - Utah
+  - Vermont
+  - Virginia
+  - Washington
+  - West Virginia
+  - Wisconsin
+  - Wyoming
 ---
 event: end_screen
 question: |
