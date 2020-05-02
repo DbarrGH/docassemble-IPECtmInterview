@@ -43,9 +43,9 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.IPECtmInterview',
-      version='0.0.1',
+      version='0.0.7',
       description=('IPEC Trademark Interview'),
-      long_description='# docassemble.IPECtmInterview\n\nIPEC Trademark Interview\n\n## Author\n\nDylan Barrett, dylanbarrett732@gmail.com\n\n',
+      long_description='# docassemble.IPECtmInterview\r\n\r\nIPEC Trademark Interview\r\n\r\n## Author\r\n\r\nDylan Barrett, dylanbarrett732@gmail.com\r\n\r\n',
       long_description_content_type='text/markdown',
       author='Dylan Barrett',
       author_email='dylanbarrett732@gmail.com',
